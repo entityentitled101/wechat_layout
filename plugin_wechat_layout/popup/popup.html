@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>微信排版助手</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div id="app" class="popup-container">
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">✨</span>
+                <h1>微信排版助手</h1>
+            </div>
+            <div class="version">V1.0</div>
+        </header>
+
+        <main class="content">
+            <div class="editor-pane">
+                <div class="pane-label">输入 Markdown</div>
+                <textarea id="input-md" placeholder="在此粘贴 AI 生成的 Markdown 内容..."></textarea>
+            </div>
+
+            <div class="actions">
+                <button id="btn-format" class="btn btn-primary">🚀 一键排版</button>
+                <button id="btn-copy" class="btn btn-success">📋 复制 HTML</button>
+            </div>
+
+            <div class="preview-pane">
+                <div class="pane-label">微信效果预览</div>
+                <div id="output-html" class="wechat-style">
+                    <div class="empty-state">等待排版中...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 必须先加载 marked 核心库 -->
+    <script src="../lib/marked.min.js"></script>
+    <!-- 再加载自己的业务逻辑 -->
+    <script src="popup.js"></script>
+</body>
+</html>

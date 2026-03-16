@@ -122,7 +122,7 @@ function transformMarkdown(md) {
         }
         return `<p style="margin-bottom:1.6em; line-height:1.8; font-size: 15px; color:#3f3f3f;">${text}</p>`;
     };
-    
+
     renderer.hr = () => `
         <section style="text-align:center; margin:45px 0; height:1px; border:none; display:block;">
             <div style="display:inline-block; position:relative; top:-14px; padding:0 15px; background:#fff; color:#07c160; letter-spacing:12px; font-size:14px;">✦ ✦ ✦</div>

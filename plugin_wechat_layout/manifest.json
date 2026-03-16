@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "✨ 微信排版助手",
+  "version": "1.6",
+  "description": "一键将 Markdown 转换为精美的微信公众号排版格式，支持编辑器内直接排版。",
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "permissions": ["storage", "clipboardWrite", "activeTab", "scripting"],
+  "host_permissions": ["https://mp.weixin.qq.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://mp.weixin.qq.com/*"],
+      "js": ["lib/marked.min.js", "content_scripts/wechat_typeset.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["lib/marked.min.js"],
+      "matches": ["https://mp.weixin.qq.com/*"]
+    }
+  ]
+}
