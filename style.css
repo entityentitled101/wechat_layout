@@ -1,0 +1,293 @@
+/* Base Design System */
+:root {
+    --primary: #07c160; /* 微信绿 */
+    --primary-hover: #06ae56;
+    --bg-app: #f5f7fa;
+    --bg-pane: #ffffff;
+    --text-main: #2c3e50;
+    --text-muted: #7f8c8d;
+    --border-color: #e1e8ed;
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --radius: 12px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Noto Sans SC', sans-serif;
+}
+
+body {
+    background: var(--bg-app);
+    color: var(--text-main);
+    overflow: hidden; /* 防止页面滚动，内容区滚动 */
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Header UI */
+.header {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    z-index: 100;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    font-size: 1.5rem;
+}
+
+.header h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* Button System */
+.btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #eef2f7;
+    color: #4b5563;
+}
+
+.btn-secondary:hover {
+    background: #e2e8f0;
+}
+
+.btn-success {
+    background: #3b82f6;
+    color: white;
+}
+
+/* Main Layout */
+.container {
+    flex: 1;
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    overflow: hidden;
+}
+
+.editor-pane, .preview-pane {
+    flex: 1;
+    background: var(--bg-pane);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+}
+
+.pane-header {
+    padding: 12px 20px;
+    background: #fcfdfe;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.badge {
+    background: #edf2f7;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+textarea {
+    flex: 1;
+    padding: 20px;
+    border: none;
+    resize: none;
+    outline: none;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #444;
+}
+
+#preview-container {
+    flex: 1;
+    padding: 40px;
+    background: #f0f2f5;
+    overflow-y: auto;
+}
+
+#output-html {
+    max-width: 375px; /* 模拟微信手机端宽度 */
+    margin: 0 auto;
+    background: white;
+    min-height: 600px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-radius: 4px;
+}
+
+.empty-state {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* --- WECHAT CONTENT STYLES (Key Logic) --- */
+.wechat-style {
+    font-family: -apple-system-font,BlinkMacSystemFont,"Helvetica Neue","PingFang SC","Hiragino Sans GB","Microsoft YaHei UI","Microsoft YaHei",Arial,sans-serif;
+    font-size: 15px;
+    color: #333;
+    line-height: 1.75;
+    word-wrap: break-word;
+}
+
+.wechat-style h1 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 20px 0 10px;
+    text-align: center;
+}
+
+.wechat-style h2 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 15px 0 10px;
+    border-left: 4px solid var(--primary);
+    padding-left: 10px;
+}
+
+.wechat-style h3, .wechat-style h4 {
+    font-size: 15px;
+    font-weight: bold;
+    margin: 15px 0 5px;
+}
+
+.wechat-style p {
+    margin-bottom: 1.2em;
+}
+
+.wechat-style blockquote {
+    margin: 1.2em 0;
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-left: 8px solid #07c160;
+    color: #666;
+    font-style: italic;
+    border-radius: 4px;
+}
+
+/* 微信分割线 */
+.wechat-style hr {
+    border: none;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.1), rgba(0,0,0,0));
+    margin: 30px 0;
+}
+
+/* 自定义分割线样式 */
+.custom-separator {
+    text-align: center;
+    margin: 30px 0;
+    color: var(--primary);
+}
+
+.custom-separator::before {
+    content: "✦ ✦ ✦";
+    letter-spacing: 10px;
+    font-size: 12px;
+}
+
+/* Modal UI */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 400px;
+    box-shadow: var(--shadow-soft);
+}
+
+.modal-content input {
+    width: 100%;
+    margin: 20px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.footer {
+    padding: 10px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: white;
+    border-top: 1px solid var(--border-color);
+}

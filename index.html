@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微信公众号自动排版 - 精美、高效、纯净</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">✨</span>
+                <h1>微信排版助手</h1>
+            </div>
+            <div class="actions">
+                <button id="btn-ai" class="btn btn-secondary">
+                    <span class="icon">🤖</span> AI 智能校验
+                </button>
+                <button id="btn-format" class="btn btn-primary">
+                    <span class="icon">🚀</span> 一键排版
+                </button>
+                <button id="btn-copy" class="btn btn-success">
+                    <span class="icon">📋</span> 复制 HTML
+                </button>
+            </div>
+        </header>
+
+        <main class="container">
+            <div class="editor-pane">
+                <div class="pane-header">
+                    <span>输入 Markdown</span>
+                    <span class="badge">Markdown</span>
+                </div>
+                <textarea id="input-md" placeholder="请在此粘贴 AI 生成的 Markdown 内容..."></textarea>
+            </div>
+
+            <div class="preview-pane">
+                <div class="pane-header">
+                    <span>微信效果预览</span>
+                    <div class="preview-controls">
+                        <span class="preview-device">模拟 iPhone 15</span>
+                    </div>
+                </div>
+                <div id="preview-container">
+                    <div id="output-html" class="wechat-style">
+                        <!-- 渲染后的内容将显示在这里 -->
+                        <div class="empty-state">
+                            <p>排版效果将在这里实时展示</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2026 公众号排版助手 | 让每一篇文章都干净整洁</p>
+        </footer>
+    </div>
+
+    <!-- 弹窗：AI 配置 -->
+    <div id="ai-modal" class="modal">
+        <div class="modal-content">
+            <h3>AI 智能校验配置</h3>
+            <p>输入您的智谱 AI API Key 以启用格式自动判定功能</p>
+            <input type="password" id="api-key" placeholder="Enter API Key...">
+            <div class="modal-actions">
+                <button id="modal-close" class="btn">取消</button>
+                <button id="modal-save" class="btn btn-primary">保存并启动</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>
