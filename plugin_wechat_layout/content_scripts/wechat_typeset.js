@@ -1,10 +1,10 @@
 /**
- * 微信公众号编辑器 - 魔法一键排版助手 (V2.5 兼容版)
- * 支持：Alt+数字快捷键、点击应用、动态标题字号、三横线样式、框样式系统
+ * 微信公众号编辑器 - 魔法一键排版助手 (V2.6 精细排版版)
+ * 支持：紧凑行间距、单独加粗、单独分割线、图片解释文字
  */
 
 (function () {
-    console.log("微信排版助手 V2.5 - 核心已加载");
+    console.log("微信排版助手 V2.6 - 精细排版已加载");
 
     // ============================================
     // 默认设置
@@ -20,6 +20,8 @@
         autoHrBeforeH2: true,
         autoHrBeforeH3: false,
         themeColor: '#07c160',
+        // 行间距设置
+        paragraphSpacing: 'normal', // 'compact'(紧凑), 'normal'(标准), 'loose'(宽松)
         boxIcons: {
             quote: '💬',
             tip: '💡',
@@ -28,13 +30,14 @@
             keypoint: '🎯',
             elegant: '✨',
             minimal: '▪️',
-            card: '📋'
+            card: '📋',
+            caption: '🖼️'  // 图片解释
         }
     };
 
     // 可选图标列表
     const AVAILABLE_ICONS = [
-        '💬', '💡', 'ℹ️', '⚠️', '🎯', '✨', '▪️', '📋',
+        '💬', '💡', 'ℹ️', '⚠️', '🎯', '✨', '▪️', '📋', '🖼️',
         '🔔', '📌', '⭐', '🔥', '💎', '🎨', '📖', '📝',
         '🔍', '🚀', '🎉', '✅', '❌', '⚡', '🔑',
         '🎁', '📢', '💭', '👆', '👇', '👈', '👉',
@@ -43,7 +46,7 @@
         '🎓', '💼', '📚', '🔖', '📜', '🗂️', '📇', '🗒️'
     ];
 
-    // Alt+数字 到框样式的映射
+    // Alt+数字 到功能的映射
     const ALT_KEY_MAP = {
         '1': 'quote',
         '2': 'tip',
@@ -52,7 +55,9 @@
         '5': 'keypoint',
         '6': 'elegant',
         '7': 'minimal',
-        '8': 'card'
+        '8': 'card',
+        '9': 'caption',  // 图片解释
+        '0': 'bold'      // 单独加粗
     };
 
     // ============================================
@@ -61,76 +66,93 @@
     const BOX_STYLES = {
         quote: {
             name: '引言框',
+            shortcut: '1',
             render: (content, color, icon) => `
-                <div style="background-color: #f8fcf9; border-left: 5px solid ${color}; padding: 20px 18px; border-radius: 0 10px 10px 0; margin: 25px 0; display: block;">
-                    <strong style="color: ${color}; font-size: 17px; display: block; margin-bottom: 10px;">${icon} 引言</strong>
-                    <span style="font-size: 15px; color: #333; line-height: 1.6;">${content}</span>
+                <div style="background-color: #f8fcf9; border-left: 5px solid ${color}; padding: 16px 14px; border-radius: 0 8px 8px 0; margin: 16px 0; display: block;">
+                    <strong style="color: ${color}; font-size: 15px; display: block; margin-bottom: 8px;">${icon} 引言</strong>
+                    <span style="font-size: 15px; color: #333; line-height: 1.7;">${content}</span>
                 </div>
             `
         },
         tip: {
             name: '提示框',
+            shortcut: '2',
             render: (content, color, icon) => `
-                <div style="background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); border: 1px solid ${color}; border-radius: 12px; padding: 20px; margin: 25px 0;">
-                    <strong style="color: ${color}; font-size: 15px; display: block; margin-bottom: 8px;">${icon} 提示</strong>
-                    <span style="font-size: 15px; color: #333; line-height: 1.6;">${content}</span>
+                <div style="background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); border: 1px solid ${color}; border-radius: 10px; padding: 16px; margin: 16px 0;">
+                    <strong style="color: ${color}; font-size: 14px; display: block; margin-bottom: 6px;">${icon} 提示</strong>
+                    <span style="font-size: 15px; color: #333; line-height: 1.7;">${content}</span>
                 </div>
             `
         },
         info: {
             name: '信息框',
+            shortcut: '3',
             render: (content, color, icon) => `
-                <div style="background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%); border: 1px solid #3ea6ff; border-radius: 12px; padding: 20px; margin: 25px 0;">
-                    <strong style="color: #3ea6ff; font-size: 15px; display: block; margin-bottom: 8px;">${icon} 信息</strong>
-                    <span style="font-size: 15px; color: #333; line-height: 1.6;">${content}</span>
+                <div style="background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%); border: 1px solid #3ea6ff; border-radius: 10px; padding: 16px; margin: 16px 0;">
+                    <strong style="color: #3ea6ff; font-size: 14px; display: block; margin-bottom: 6px;">${icon} 信息</strong>
+                    <span style="font-size: 15px; color: #333; line-height: 1.7;">${content}</span>
                 </div>
             `
         },
         warning: {
             name: '警告框',
+            shortcut: '4',
             render: (content, color, icon) => `
-                <div style="background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%); border-left: 4px solid #f59e0b; border-radius: 0 12px 12px 0; padding: 20px; margin: 25px 0;">
-                    <strong style="color: #f59e0b; font-size: 15px; display: block; margin-bottom: 8px;">${icon} 注意</strong>
-                    <span style="font-size: 15px; color: #333; line-height: 1.6;">${content}</span>
+                <div style="background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%); border-left: 4px solid #f59e0b; border-radius: 0 10px 10px 0; padding: 16px; margin: 16px 0;">
+                    <strong style="color: #f59e0b; font-size: 14px; display: block; margin-bottom: 6px;">${icon} 注意</strong>
+                    <span style="font-size: 15px; color: #333; line-height: 1.7;">${content}</span>
                 </div>
             `
         },
         keypoint: {
             name: '重点框',
+            shortcut: '5',
             render: (content, color, icon) => `
-                <div style="background: #fafafa; border: 2px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 25px 0;">
-                    <strong style="color: ${color}; font-size: 15px; display: block; margin-bottom: 8px;">${icon} 重点</strong>
-                    <span style="font-size: 15px; color: #333; line-height: 1.6;">${content}</span>
+                <div style="background: #fafafa; border: 2px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0;">
+                    <strong style="color: ${color}; font-size: 14px; display: block; margin-bottom: 6px;">${icon} 重点</strong>
+                    <span style="font-size: 15px; color: #333; line-height: 1.7;">${content}</span>
                 </div>
             `
         },
         elegant: {
             name: '优雅框',
+            shortcut: '6',
             render: (content, color, icon) => `
-                <div style="background: white; border: 1px solid ${color}; box-shadow: 0 4px 12px rgba(7, 193, 96, 0.1); border-radius: 16px; padding: 24px; margin: 25px 0;">
-                    <div style="text-align: center; margin-bottom: 12px; font-size: 24px;">${icon}</div>
-                    <span style="font-size: 15px; color: #333; line-height: 1.6;">${content}</span>
+                <div style="background: white; border: 1px solid ${color}; box-shadow: 0 4px 12px rgba(7, 193, 96, 0.1); border-radius: 14px; padding: 20px; margin: 16px 0;">
+                    <div style="text-align: center; margin-bottom: 10px; font-size: 22px;">${icon}</div>
+                    <span style="font-size: 15px; color: #333; line-height: 1.7;">${content}</span>
                 </div>
             `
         },
         minimal: {
             name: '简约框',
+            shortcut: '7',
             render: (content, color, icon) => `
-                <div style="border-bottom: 3px solid ${color}; padding: 16px 0; margin: 25px 0;">
-                    <span style="font-size: 18px; margin-right: 8px;">${icon}</span>
-                    <span style="font-size: 15px; color: #333; line-height: 1.6;">${content}</span>
+                <div style="border-bottom: 3px solid ${color}; padding: 14px 0; margin: 16px 0;">
+                    <span style="font-size: 16px; margin-right: 8px;">${icon}</span>
+                    <span style="font-size: 15px; color: #333; line-height: 1.7;">${content}</span>
                 </div>
             `
         },
         card: {
             name: '卡片框',
+            shortcut: '8',
             render: (content, color, icon) => `
-                <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 20px; margin: 25px 0; border: 1px solid #f0f0f0;">
-                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                        <span style="font-size: 20px; margin-right: 8px;">${icon}</span>
-                        <span style="color: ${color}; font-weight: 600; font-size: 14px;">卡片</span>
+                <div style="background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 16px; margin: 16px 0; border: 1px solid #f0f0f0;">
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 18px; margin-right: 8px;">${icon}</span>
+                        <span style="color: ${color}; font-weight: 600; font-size: 13px;">卡片</span>
                     </div>
-                    <span style="font-size: 15px; color: #333; line-height: 1.6;">${content}</span>
+                    <span style="font-size: 15px; color: #333; line-height: 1.7;">${content}</span>
+                </div>
+            `
+        },
+        caption: {
+            name: '图片解释',
+            shortcut: '9',
+            render: (content, color, icon) => `
+                <div style="text-align: center; margin: 12px 0;">
+                    <span style="font-size: 13px; color: ${color}; font-style: italic; line-height: 1.6;">${icon} ${content}</span>
                 </div>
             `
         }
@@ -146,6 +168,7 @@
                 if (saved) {
                     const parsed = JSON.parse(saved);
                     if (!parsed.boxIcons) parsed.boxIcons = { ...DEFAULT_SETTINGS.boxIcons };
+                    if (!parsed.paragraphSpacing) parsed.paragraphSpacing = 'normal';
                     return { ...DEFAULT_SETTINGS, ...parsed };
                 }
             } catch (e) {
@@ -181,23 +204,29 @@
 
         getH1Style(settings) {
             const size = settings?.h1Size || 20;
-            return `font-size: ${size}px; font-weight: bold; margin: 25px 0 15px; text-align: center; color: #222; display: block; line-height: 1.4;`;
+            return `font-size: ${size}px; font-weight: bold; margin: 22px 0 12px; text-align: center; color: #222; display: block; line-height: 1.4;`;
         },
 
         getH2Style(settings) {
             const size = settings?.h2Size || 17;
             const color = settings?.themeColor || '#07c160';
-            return `font-size: ${size}px; font-weight: bold; margin: 25px 0 15px; border-left: 5px solid ${color}; padding-left: 12px; color: #222; display: block; line-height: 1.3;`;
+            return `font-size: ${size}px; font-weight: bold; margin: 20px 0 12px; border-left: 5px solid ${color}; padding-left: 12px; color: #222; display: block; line-height: 1.3;`;
         },
 
         getH3Style(settings) {
             const size = settings?.h3Size || 15;
             const color = settings?.themeColor || '#07c160';
-            return `font-size: ${size}px; font-weight: bold; margin: 20px 0 12px; color: ${color}; display: block; line-height: 1.3;`;
+            return `font-size: ${size}px; font-weight: bold; margin: 16px 0 10px; color: ${color}; display: block; line-height: 1.3;`;
         },
 
-        getParagraphStyle() {
-            return 'margin-bottom: 25px; line-height: 1.8; font-size: 15px; color: #3f3f3f; display: block;';
+        getParagraphStyle(spacing = 'normal') {
+            // 根据间距设置调整
+            const margins = {
+                compact: 'margin-bottom: 12px;',
+                normal: 'margin-bottom: 16px;',
+                loose: 'margin-bottom: 25px;'
+            };
+            return `${margins[spacing] || margins.normal} line-height: 1.75; font-size: 15px; color: #3f3f3f; display: block;`;
         },
 
         getHrHTML(settings) {
@@ -205,10 +234,10 @@
             const color = settings?.themeColor || '#07c160';
             
             const styles = {
-                stars: `<div style="text-align: center; margin: 35px 0; height: 1px; background: #e1e8ed; position: relative;"><span style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: white; padding: 0 15px; color: ${color}; letter-spacing: 4px; font-size: 14px;">✦ ✦ ✦</span></div>`,
-                line: `<div style="text-align: center; margin: 35px 0;"><div style="height: 1px; background: linear-gradient(to right, transparent, ${color}, transparent); width: 60%; margin: 0 auto;"></div></div>`,
-                dots: `<div style="text-align: center; margin: 35px 0; color: ${color}; letter-spacing: 8px; font-size: 20px; opacity: 0.6;">···</div>`,
-                wave: `<div style="text-align: center; margin: 35px 0; color: ${color}; letter-spacing: 4px; font-size: 18px; opacity: 0.7;">〜 〜 〜</div>`,
+                stars: `<div style="text-align: center; margin: 24px 0; height: 1px; background: #e1e8ed; position: relative;"><span style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: white; padding: 0 15px; color: ${color}; letter-spacing: 4px; font-size: 14px;">✦ ✦ ✦</span></div>`,
+                line: `<div style="text-align: center; margin: 24px 0;"><div style="height: 1px; background: linear-gradient(to right, transparent, ${color}, transparent); width: 60%; margin: 0 auto;"></div></div>`,
+                dots: `<div style="text-align: center; margin: 24px 0; color: ${color}; letter-spacing: 8px; font-size: 20px; opacity: 0.6;">···</div>`,
+                wave: `<div style="text-align: center; margin: 24px 0; color: ${color}; letter-spacing: 4px; font-size: 18px; opacity: 0.7;">〜 〜 〜</div>`,
                 none: ''
             };
             
@@ -249,6 +278,7 @@
                     continue;
                 }
 
+                // 最多保留一个空行
                 if (emptyCount > 0 && result.length > 0) {
                     result.push('');
                 }
@@ -309,6 +339,7 @@
 
             const processed = this.preprocess(md);
             const settings = this.settings;
+            const spacing = settings?.paragraphSpacing || 'normal';
             const result = [];
             let inList = false;
             let listItems = [];
@@ -317,7 +348,8 @@
 
             const flushList = () => {
                 if (inList && listItems.length > 0) {
-                    result.push(`<ul style="margin-bottom: 25px; padding-left: 20px; font-size: 15px; color: #3f3f3f; line-height: 1.8;">${listItems.join('')}</ul>`);
+                    const listMargin = spacing === 'compact' ? '12px' : (spacing === 'loose' ? '25px' : '16px');
+                    result.push(`<ul style="margin-bottom: ${listMargin}; padding-left: 20px; font-size: 15px; color: #3f3f3f; line-height: 1.75;">${listItems.join('')}</ul>`);
                     listItems = [];
                     inList = false;
                 }
@@ -326,7 +358,8 @@
             const flushCodeBlock = () => {
                 if (inCodeBlock && codeBlockContent.length > 0) {
                     const code = codeBlockContent.join('\n').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                    result.push(`<pre style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 16px; overflow-x: auto; margin: 20px 0;"><code style="font-family: 'Fira Code', Consolas, monospace; font-size: 13px; line-height: 1.6; color: #333;">${code}</code></pre>`);
+                    const codeMargin = spacing === 'compact' ? '12px' : (spacing === 'loose' ? '25px' : '20px');
+                    result.push(`<pre style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 16px; overflow-x: auto; margin: ${codeMargin} 0;"><code style="font-family: 'Fira Code', Consolas, monospace; font-size: 13px; line-height: 1.6; color: #333;">${code}</code></pre>`);
                     codeBlockContent = [];
                     inCodeBlock = false;
                 }
@@ -360,14 +393,15 @@
 
                 if (t.startsWith('- ') || t.startsWith('* ')) {
                     inList = true;
-                    listItems.push(`<li style="margin-bottom: 10px;">${this.parseInline(t.substring(2))}</li>`);
+                    listItems.push(`<li style="margin-bottom: 8px;">${this.parseInline(t.substring(2))}</li>`);
                     continue;
                 }
 
                 if (/^\d+\.\s/.test(t)) {
                     flushList();
                     const content = t.replace(/^\d+\.\s*/, '');
-                    result.push(`<ol style="margin-bottom: 25px; padding-left: 25px; font-size: 15px; color: #3f3f3f; line-height: 1.8; list-style-type: decimal;"><li style="margin-bottom: 10px;">${this.parseInline(content)}</li></ol>`);
+                    const listMargin = spacing === 'compact' ? '12px' : (spacing === 'loose' ? '25px' : '16px');
+                    result.push(`<ol style="margin-bottom: ${listMargin}; padding-left: 25px; font-size: 15px; color: #3f3f3f; line-height: 1.75; list-style-type: decimal;"><li style="margin-bottom: 8px;">${this.parseInline(content)}</li></ol>`);
                     continue;
                 }
 
@@ -382,9 +416,9 @@
                     const isReference = /参考资料|sources|参考书目/i.test(t);
                     if (isReference) {
                         const inner = t.replace(/^.*?(参考资料|Sources|参考书目)[:：]?\s*/i, '');
-                        result.push(`<section style="font-size: 12px; color: #888; background: #fafafa; padding: 15px; border-radius: 8px; margin: 30px 0; border: 1px solid #f0f0f0; display: block;"><strong style="color: #666; display: block; margin-bottom: 10px; font-size: 13px;">📚 推荐阅读 / 参考资料</strong><div style="line-height: 1.7;">${this.parseInline(inner)}</div></section>`);
+                        result.push(`<section style="font-size: 12px; color: #888; background: #fafafa; padding: 12px; border-radius: 8px; margin: 16px 0; border: 1px solid #f0f0f0; display: block;"><strong style="color: #666; display: block; margin-bottom: 8px; font-size: 13px;">📚 推荐阅读 / 参考资料</strong><div style="line-height: 1.7;">${this.parseInline(inner)}</div></section>`);
                     } else {
-                        result.push(`<section style="margin: 30px 0; padding: 20px 25px; background-color: #f0f9ff; border: 1px dashed #3ea6ff; border-radius: 12px; display: block;"><p style="font-size: 15px; font-weight: bold; color: #1e40af; margin: 0; line-height: 1.6; text-align: center;">${this.parseInline(t)}</p></section>`);
+                        result.push(`<section style="margin: 20px 0; padding: 16px 20px; background-color: #f0f9ff; border: 1px dashed #3ea6ff; border-radius: 10px; display: block;"><p style="font-size: 14px; font-weight: bold; color: #1e40af; margin: 0; line-height: 1.6; text-align: center;">${this.parseInline(t)}</p></section>`);
                     }
                     continue;
                 }
@@ -410,7 +444,7 @@
                     continue;
                 }
 
-                result.push(`<p style="${StyleGenerator.getParagraphStyle()}">${this.parseInline(line)}</p>`);
+                result.push(`<p style="${StyleGenerator.getParagraphStyle(spacing)}">${this.parseInline(line)}</p>`);
             }
 
             flushList();
@@ -429,64 +463,78 @@
         apply(boxType) {
             const settings = Utils.getSettings();
             const themeColor = settings?.themeColor || '#07c160';
-            const icon = settings?.boxIcons?.[boxType] || '💬';
-            const boxRenderer = BOX_STYLES[boxType] || BOX_STYLES.quote;
             
             // 获取当前选中的文字
             const selection = window.getSelection();
             const selectedText = selection.toString().trim();
-            
-            if (!selectedText) {
+
+            let html = '';
+
+            if (boxType === 'hr') {
+                // 分割线 - 不需要选中文字，直接在光标位置插入
+                html = StyleGenerator.getHrHTML(settings);
+                this.insertHTML(html, '分割线');
+                return;
+            } else if (!selectedText) {
+                // 其他样式需要选中文字
                 this.showToast('⚠️ 请先选中文字');
                 return;
             }
 
-            const boxHtml = boxRenderer.render(selectedText, themeColor, icon);
-            
-            // 尝试多种方式插入
-            let inserted = false;
-            
-            // 方式1：直接在当前文档执行
-            try {
-                document.execCommand('insertHTML', false, boxHtml);
-                inserted = true;
-            } catch (e) {
-                console.log('Method 1 failed:', e);
+            if (boxType === 'bold') {
+                // 单独加粗 - 绿色
+                const boldColor = settings?.boldColor || '#07c160';
+                html = `<strong style="color: ${boldColor}; font-weight: bold;">${selectedText}</strong>`;
+            } else {
+                // 框样式
+                const icon = settings?.boxIcons?.[boxType] || '💬';
+                const boxRenderer = BOX_STYLES[boxType];
+                if (!boxRenderer) {
+                    this.showToast('❌ 未知样式');
+                    return;
+                }
+                html = boxRenderer.render(selectedText, themeColor, icon);
             }
             
-            // 方式2：尝试在 iframe 中执行
+            this.insertHTML(html, boxType === 'bold' ? '加粗（绿色）' : BOX_STYLES[boxType]?.name);
+        },
+
+        insertHTML(html, successMsg) {
+            const selection = window.getSelection();
+            let inserted = false;
+            
+            try {
+                document.execCommand('insertHTML', false, html);
+                inserted = true;
+            } catch (e) {}
+            
             if (!inserted) {
                 const iframe = document.querySelector("#ueditor_0");
                 if (iframe) {
                     try {
                         const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
                         if (iframeDoc) {
-                            iframeDoc.execCommand('insertHTML', false, boxHtml);
+                            iframeDoc.execCommand('insertHTML', false, html);
                             inserted = true;
                         }
-                    } catch (e) {
-                        console.log('Method 2 failed:', e);
-                    }
+                    } catch (e) {}
                 }
             }
             
-            // 方式3：替换选中的文本节点
             if (!inserted && selection.rangeCount > 0) {
                 try {
                     const range = selection.getRangeAt(0);
-                    const fragment = document.createRange().createContextualFragment(boxHtml);
+                    const fragment = document.createRange().createContextualFragment(html);
                     range.deleteContents();
                     range.insertNode(fragment);
                     inserted = true;
-                } catch (e) {
-                    console.log('Method 3 failed:', e);
-                }
+                } catch (e) {}
             }
             
             if (inserted) {
-                this.showToast(`✅ 已应用「${BOX_STYLES[boxType]?.name}」`);
+                this.showToast(`✅ 已应用「${successMsg}」`);
             } else {
-                this.showToast('❌ 应用失败，请重试');
+                this.showToast('❌ 应用失败');
             }
         },
 
@@ -515,7 +563,6 @@
     // 全局快捷键监听
     // ============================================
     document.addEventListener('keydown', (e) => {
-        // Alt + 数字 (1-8) 应用框样式
         if (e.altKey && !e.ctrlKey && !e.metaKey) {
             const boxType = ALT_KEY_MAP[e.key];
             if (boxType) {
@@ -525,7 +572,7 @@
         }
     }, true);
 
-    // 在 iframe 中也监听
+    // iframe 监听
     function setupIframeListener() {
         const iframe = document.querySelector("#ueditor_0");
         if (iframe) {
@@ -542,13 +589,9 @@
                         }
                     }, true);
                 }
-            } catch (e) {
-                console.log('Cannot access iframe:', e);
-            }
+            } catch (e) {}
         }
     }
-    
-    // 定期检查 iframe
     setInterval(setupIframeListener, 3000);
 
     // ============================================
@@ -657,12 +700,11 @@
             const renderBoxStyleButtons = () => {
                 return Object.entries(BOX_STYLES).map(([key, style]) => {
                     const icon = settings.boxIcons?.[key] || '💬';
-                    const keyNum = Object.keys(ALT_KEY_MAP).find(k => ALT_KEY_MAP[k] === key);
                     return `
-                        <button class="box-style-btn" data-box="${key}" title="Alt+${keyNum}" style="
-                            padding: 10px 8px;
+                        <button class="box-style-btn" data-box="${key}" title="Alt+${style.shortcut}" style="
+                            padding: 8px 4px;
                             border: 1px solid #e5e7eb;
-                            border-radius: 8px;
+                            border-radius: 6px;
                             background: white;
                             cursor: pointer;
                             font-size: 11px;
@@ -670,12 +712,11 @@
                             display: flex;
                             flex-direction: column;
                             align-items: center;
-                            gap: 6px;
-                            transition: all 0.2s;
+                            gap: 4px;
                         ">
-                            <span class="box-icon" style="font-size: 22px;">${icon}</span>
+                            <span class="box-icon" style="font-size: 18px;">${icon}</span>
                             <span>${style.name}</span>
-                            <span style="font-size: 9px; color: #9ca3af;">Alt+${keyNum}</span>
+                            <span style="font-size: 9px; color: #9ca3af;">Alt+${style.shortcut}</span>
                         </button>
                     `;
                 }).join('');
@@ -684,17 +725,23 @@
             panel.style.cssText = `
                 background: white;
                 border-radius: 12px;
-                padding: 16px;
+                padding: 16px 16px 80px 16px;
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
                 width: 320px;
                 display: none;
                 font-size: 13px;
-                max-height: 70vh;
+                max-height: calc(100vh - 300px);
                 overflow-y: auto;
                 position: fixed;
                 right: 20px;
                 top: 270px;
+                box-sizing: border-box;
             `;
+
+            const spacingValue = settings?.paragraphSpacing || 'normal';
+            const spacingCompact = spacingValue === 'compact' ? 'checked' : '';
+            const spacingNormal = spacingValue === 'normal' ? 'checked' : '';
+            const spacingLoose = spacingValue === 'loose' ? 'checked' : '';
 
             panel.innerHTML = `
                 <div style="font-weight: 600; margin-bottom: 12px; color: #1f2937; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px;">⚙️ 排版设置</div>
@@ -712,6 +759,21 @@
                 <div style="margin-bottom: 12px;">
                     <div style="color: #6b7280; margin-bottom: 6px; font-size: 12px;">三级标题: <span id="h3-val">${settings.h3Size}</span>px</div>
                     <input type="range" id="h3-size" min="13" max="19" value="${settings.h3Size}" style="width: 100%; accent-color: #07c160;">
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <div style="color: #6b7280; margin-bottom: 6px; font-size: 12px;">行间距</div>
+                    <div style="display: flex; gap: 6px;">
+                        <label style="flex: 1; padding: 6px; border: 1px solid ${spacingCompact ? '#07c160' : '#e5e7eb'}; border-radius: 6px; background: ${spacingCompact ? '#f0fdf4' : 'white'}; cursor: pointer; font-size: 11px; text-align: center;">
+                            <input type="radio" name="spacing" value="compact" ${spacingCompact} style="accent-color: #07c160; margin-right: 4px;">紧凑
+                        </label>
+                        <label style="flex: 1; padding: 6px; border: 1px solid ${spacingNormal ? '#07c160' : '#e5e7eb'}; border-radius: 6px; background: ${spacingNormal ? '#f0fdf4' : 'white'}; cursor: pointer; font-size: 11px; text-align: center;">
+                            <input type="radio" name="spacing" value="normal" ${spacingNormal} style="accent-color: #07c160; margin-right: 4px;">标准
+                        </label>
+                        <label style="flex: 1; padding: 6px; border: 1px solid ${spacingLoose ? '#07c160' : '#e5e7eb'}; border-radius: 6px; background: ${spacingLoose ? '#f0fdf4' : 'white'}; cursor: pointer; font-size: 11px; text-align: center;">
+                            <input type="radio" name="spacing" value="loose" ${spacingLoose} style="accent-color: #07c160; margin-right: 4px;">宽松
+                        </label>
+                    </div>
                 </div>
 
                 <div style="margin-bottom: 12px;">
@@ -753,7 +815,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <div>
                             <span style="font-size: 12px; font-weight: 600; color: #374151;">框样式</span>
-                            <div style="font-size: 10px; color: #9ca3af;">选中文字后按 Alt+1~8 快速应用</div>
+                            <div style="font-size: 10px; color: #9ca3af;">选中文字后按 Alt+1~9 快速应用</div>
                         </div>
                         <button id="toggle-edit-icons" style="
                             font-size: 11px;
@@ -765,8 +827,17 @@
                             color: #6b7280;
                         ">✏️ 编辑图标</button>
                     </div>
-                    <div id="box-styles-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                    <div id="box-styles-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px;">
                         ${renderBoxStyleButtons()}
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding-top: 10px; border-top: 1px dashed #e5e7eb;">
+                        <button id="apply-bold" style="padding: 10px; border: 1px solid #07c160; border-radius: 8px; background: #f0fdf4; cursor: pointer; font-size: 12px; color: #07c160; font-weight: 600;">
+                            <span style="font-size: 16px;">𝐁</span> 加粗文字 (Alt+0)
+                        </button>
+                        <button id="apply-hr" style="padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px; background: white; cursor: pointer; font-size: 12px; color: #374151;">
+                            <span style="font-size: 16px;">✦✦✦</span> 插入分割线
+                        </button>
                     </div>
                 </div>
 
@@ -805,43 +876,43 @@
                         const boxType = e.currentTarget.dataset.box;
                         this.showIconPicker(boxType, e.currentTarget);
                     } else {
-                        // 点击应用框样式
                         const boxType = e.currentTarget.dataset.box;
                         BoxStyleManager.apply(boxType);
                     }
                 });
             });
 
+            panel.querySelector('#apply-bold')?.addEventListener('click', () => {
+                BoxStyleManager.apply('bold');
+            });
+
+            panel.querySelector('#apply-hr')?.addEventListener('click', () => {
+                BoxStyleManager.apply('hr');
+            });
+
             panel.querySelector('#toggle-edit-icons')?.addEventListener('click', (e) => {
                 this.isEditingIcons = !this.isEditingIcons;
-                const grid = panel.querySelector('#box-styles-grid');
-                
-                if (this.isEditingIcons) {
-                    e.target.textContent = '✓ 完成';
-                    e.target.style.background = '#07c160';
-                    e.target.style.color = 'white';
-                    panel.querySelectorAll('.box-style-btn').forEach(btn => {
+                panel.querySelectorAll('.box-style-btn').forEach(btn => {
+                    if (this.isEditingIcons) {
                         btn.style.border = '2px dashed #07c160';
                         btn.style.background = '#f0fdf4';
-                    });
-                } else {
-                    e.target.textContent = '✏️ 编辑图标';
-                    e.target.style.background = '#f9fafb';
-                    e.target.style.color = '#6b7280';
-                    panel.querySelectorAll('.box-style-btn').forEach(btn => {
+                    } else {
                         btn.style.border = '1px solid #e5e7eb';
                         btn.style.background = 'white';
-                    });
-                }
+                    }
+                });
+                e.target.textContent = this.isEditingIcons ? '✓ 完成' : '✏️ 编辑图标';
             });
 
             panel.querySelector('#save-settings')?.addEventListener('click', () => {
                 const activeHrBtn = panel.querySelector('.hr-style-btn[style*="border-color: rgb(7, 193, 96)"]') || panel.querySelector('.hr-style-btn.active');
+                const spacingRadio = panel.querySelector('input[name="spacing"]:checked');
                 
                 const newSettings = {
                     h1Size: parseInt(panel.querySelector('#h1-size').value),
                     h2Size: parseInt(panel.querySelector('#h2-size').value),
                     h3Size: parseInt(panel.querySelector('#h3-size').value),
+                    paragraphSpacing: spacingRadio?.value || 'normal',
                     hrStyle: activeHrBtn?.dataset.style || 'stars',
                     boldColor: panel.querySelector('#bold-green').checked ? '#07c160' : null,
                     highlightQuotes: panel.querySelector('#quote-highlight').checked,
@@ -936,15 +1007,14 @@
             
             grid.innerHTML = Object.entries(BOX_STYLES).map(([key, style]) => {
                 const icon = settings.boxIcons?.[key] || '💬';
-                const keyNum = Object.keys(ALT_KEY_MAP).find(k => ALT_KEY_MAP[k] === key);
                 const borderStyle = isEditing ? '2px dashed #07c160' : '1px solid #e5e7eb';
                 const bgStyle = isEditing ? '#f0fdf4' : 'white';
                 
                 return `
-                    <button class="box-style-btn" data-box="${key}" title="Alt+${keyNum}" style="
-                        padding: 10px 8px;
+                    <button class="box-style-btn" data-box="${key}" title="Alt+${style.shortcut}" style="
+                        padding: 8px 4px;
                         border: ${borderStyle};
-                        border-radius: 8px;
+                        border-radius: 6px;
                         background: ${bgStyle};
                         cursor: pointer;
                         font-size: 11px;
@@ -952,11 +1022,11 @@
                         display: flex;
                         flex-direction: column;
                         align-items: center;
-                        gap: 6px;
+                        gap: 4px;
                     ">
-                        <span class="box-icon" style="font-size: 22px;">${icon}</span>
+                        <span class="box-icon" style="font-size: 18px;">${icon}</span>
                         <span>${style.name}</span>
-                        <span style="font-size: 9px; color: #9ca3af;">Alt+${keyNum}</span>
+                        <span style="font-size: 9px; color: #9ca3af;">Alt+${style.shortcut}</span>
                     </button>
                 `;
             }).join('');
