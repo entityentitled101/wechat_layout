@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "✨ 微信排版助手",
-  "version": "1.6",
+  "version": "2.0",
   "description": "一键将 Markdown 转换为精美的微信公众号排版格式，支持编辑器内直接排版。",
   "action": {
     "default_popup": "popup/popup.html",

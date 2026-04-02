@@ -2,10 +2,12 @@
 :root {
     --primary: #07c160;
     --primary-hover: #06ae56;
+    --primary-light: #f0fdf4;
     --bg-app: #f4f6f9;
     --bg-card: #ffffff;
     --text-main: #1f2937;
     --text-muted: #6b7280;
+    --text-light: #9ca3af;
     --border-color: #e5e7eb;
 }
 
@@ -25,6 +27,7 @@ body {
     height: 100%;
 }
 
+/* Header */
 .header {
     background: white;
     padding: 14px 20px;
@@ -54,7 +57,7 @@ body {
 
 .version {
     font-size: 11px;
-    background: #f0fdf4;
+    background: var(--primary-light);
     color: var(--primary);
     padding: 2px 8px;
     border-radius: 20px;
@@ -62,27 +65,182 @@ body {
     font-weight: 600;
 }
 
+/* Content */
 .content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 16px;
-    gap: 16px;
+    padding: 12px;
+    gap: 12px;
     overflow: hidden;
 }
 
-.pane-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-bottom: 8px;
+/* Toolbar Mini */
+.toolbar-mini {
+    display: flex;
+    justify-content: center;
+}
+
+.toolbar-group-mini {
     display: flex;
     align-items: center;
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    border-radius: 50px;
+    padding: 3px;
+    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.25);
+}
+
+.btn-magic {
+    background: transparent;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-magic:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.btn-icon {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 11px;
+    cursor: pointer;
+    margin-left: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+/* Settings Panel */
+.settings-panel-mini {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.settings-section {
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.settings-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.settings-section h4 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin: 0 0 10px 0;
+}
+
+.slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.slider-row label {
+    font-size: 12px;
+    color: var(--text-muted);
+    min-width: 70px;
+}
+
+.slider-row input[type="range"] {
+    flex: 1;
+    accent-color: var(--primary);
+}
+
+.hr-selector {
+    display: flex;
     gap: 6px;
 }
 
+.hr-btn {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-muted);
+    transition: all 0.2s;
+}
+
+.hr-btn:hover {
+    border-color: var(--primary);
+}
+
+.hr-btn.active {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-main);
+    cursor: pointer;
+    margin-bottom: 6px;
+}
+
+.checkbox-label input[type="checkbox"] {
+    accent-color: var(--primary);
+}
+
+.btn-save {
+    width: 100%;
+    padding: 10px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.btn-save:hover {
+    background: var(--primary-hover);
+}
+
+/* Editor Pane */
+.pane-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
 .editor-pane {
-    height: 200px;
+    height: 160px;
     display: flex;
     flex-direction: column;
 }
@@ -107,46 +265,37 @@ textarea:focus {
     box-shadow: 0 0 0 3px rgba(7, 193, 96, 0.1);
 }
 
+/* Actions */
 .actions {
     display: flex;
-    gap: 12px;
+    justify-content: center;
 }
 
 .btn {
-    flex: 1;
-    padding: 12px;
+    padding: 10px 24px;
     border: none;
     border-radius: 10px;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    gap: 6px;
     transition: all 0.2s;
 }
 
-.btn-primary {
+.btn-success {
     background: var(--primary);
     color: white;
     box-shadow: 0 4px 12px rgba(7, 193, 96, 0.25);
 }
 
-.btn-primary:hover {
+.btn-success:hover {
     background: var(--primary-hover);
     transform: translateY(-1px);
 }
 
-.btn-success {
-    background: #3b82f6;
-    color: white;
-}
-
-.btn-success:hover {
-    background: #2563eb;
-}
-
+/* Preview Pane */
 .preview-pane {
     flex: 1;
     background: white;
@@ -155,10 +304,13 @@ textarea:focus {
     overflow-y: auto;
     position: relative;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
 }
 
 #output-html {
-    padding: 0; /* 让内层 section 控制间距 */
+    flex: 1;
     background: white;
 }
 
@@ -167,7 +319,7 @@ textarea:focus {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #9ca3af;
+    color: var(--text-light);
     font-style: italic;
     font-size: 13px;
     padding: 40px;
@@ -178,4 +330,8 @@ textarea:focus {
 .wechat-style {
     word-wrap: break-word;
     background: white;
+    font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+    font-size: 15px;
+    color: #333;
+    line-height: 1.75;
 }

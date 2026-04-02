@@ -1,27 +1,38 @@
-/* Base Design System */
+/* ============================================
+   微信排版助手 - 全局样式
+   ============================================ */
+
+/* 设计系统变量 */
 :root {
-    --primary: #07c160; /* 微信绿 */
+    --primary: #07c160;
     --primary-hover: #06ae56;
+    --primary-light: #e6f7ed;
     --bg-app: #f5f7fa;
     --bg-pane: #ffffff;
-    --text-main: #2c3e50;
-    --text-muted: #7f8c8d;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --text-light: #9ca3af;
     --border-color: #e1e8ed;
+    --border-light: #f0f0f0;
     --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
     --radius: 12px;
+    --radius-sm: 8px;
 }
 
+/* 基础重置 */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Inter', 'Noto Sans SC', sans-serif;
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
     background: var(--bg-app);
     color: var(--text-main);
-    overflow: hidden; /* 防止页面滚动，内容区滚动 */
+    overflow: hidden;
+    height: 100vh;
 }
 
 #app {
@@ -30,11 +41,13 @@ body {
     height: 100vh;
 }
 
-/* Header UI */
+/* ============================================
+   顶部导航栏
+   ============================================ */
 .header {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    padding: 1rem 2rem;
+    padding: 12px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -52,56 +65,89 @@ body {
     font-size: 1.5rem;
 }
 
-.header h1 {
-    font-size: 1.25rem;
+.logo h1 {
+    font-size: 1.2rem;
     font-weight: 600;
     color: var(--text-main);
 }
 
-.actions {
+/* ============================================
+   工具栏 - 新的紧凑设计
+   ============================================ */
+.toolbar {
     display: flex;
+    align-items: center;
     gap: 12px;
 }
 
-/* Button System */
-.btn {
-    padding: 8px 16px;
-    border-radius: 8px;
-    border: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
+.toolbar-group {
     display: flex;
     align-items: center;
-    gap: 8px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    border-radius: 50px;
+    padding: 3px;
+    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.25);
+}
+
+.toolbar-btn {
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
-.btn-primary {
-    background: var(--primary);
+/* 文字按钮 */
+.toolbar-btn-text {
+    background: transparent;
     color: white;
+    padding: 8px 16px;
+    border-radius: 50px;
 }
 
-.btn-primary:hover {
-    background: var(--primary-hover);
-    transform: translateY(-1px);
+.toolbar-btn-text:hover {
+    background: rgba(255, 255, 255, 0.15);
 }
 
-.btn-secondary {
-    background: #eef2f7;
-    color: #4b5563;
-}
-
-.btn-secondary:hover {
-    background: #e2e8f0;
-}
-
-.btn-success {
-    background: #3b82f6;
+/* 图标按钮 */
+.toolbar-btn-icon {
+    background: rgba(255, 255, 255, 0.2);
     color: white;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-size: 12px;
+    margin-left: 2px;
 }
 
-/* Main Layout */
+.toolbar-btn-icon:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.05);
+}
+
+/* 次级按钮 */
+.toolbar-btn-secondary {
+    background: white;
+    color: var(--text-main);
+    padding: 10px 18px;
+    border-radius: 50px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.toolbar-btn-secondary:hover {
+    background: var(--bg-app);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* ============================================
+   主内容区
+   ============================================ */
 .container {
     flex: 1;
     display: flex;
@@ -122,7 +168,7 @@ body {
 }
 
 .pane-header {
-    padding: 12px 20px;
+    padding: 14px 20px;
     background: #fcfdfe;
     border-bottom: 1px solid var(--border-color);
     display: flex;
@@ -134,24 +180,45 @@ body {
 }
 
 .badge {
-    background: #edf2f7;
-    padding: 2px 8px;
-    border-radius: 4px;
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 3px 10px;
+    border-radius: 20px;
     font-size: 0.75rem;
+    font-weight: 600;
 }
 
+.preview-device {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    background: #f3f4f6;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+/* 编辑器 */
 textarea {
     flex: 1;
     padding: 20px;
     border: none;
     resize: none;
     outline: none;
-    font-family: 'Fira Code', monospace;
+    font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
     font-size: 14px;
-    line-height: 1.6;
-    color: #444;
+    line-height: 1.7;
+    color: #374151;
+    background: white;
 }
 
+textarea::placeholder {
+    color: var(--text-light);
+}
+
+textarea:focus {
+    background: #fafafa;
+}
+
+/* 预览区 */
 #preview-container {
     flex: 1;
     padding: 40px;
@@ -160,12 +227,12 @@ textarea {
 }
 
 #output-html {
-    max-width: 375px; /* 模拟微信手机端宽度 */
+    max-width: 375px;
     margin: 0 auto;
     background: white;
     min-height: 600px;
     padding: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
 }
 
@@ -174,120 +241,330 @@ textarea {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-muted);
+    color: var(--text-light);
     font-style: italic;
+    padding: 60px 20px;
+    text-align: center;
 }
 
-/* --- WECHAT CONTENT STYLES (Key Logic) --- */
+/* ============================================
+   设置面板（侧边滑出）
+   ============================================ */
+.settings-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background: white;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: right 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-panel.active {
+    right: 0;
+}
+
+.settings-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #fafafa, #fff);
+}
+
+.settings-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--text-muted);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-close:hover {
+    background: var(--border-light);
+    color: var(--text-main);
+}
+
+.settings-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.settings-section {
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.settings-section:last-child {
+    border-bottom: none;
+}
+
+.settings-section h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 设置项 */
+.setting-item {
+    margin-bottom: 16px;
+}
+
+.setting-item label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.size-value {
+    color: var(--primary);
+    font-weight: 600;
+    font-family: monospace;
+}
+
+/* 滑块 */
+.slider {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border-light);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(7, 193, 96, 0.3);
+}
+
+.slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(7, 193, 96, 0.3);
+}
+
+/* 样式选择器 */
+.style-selector {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+.style-btn {
+    background: white;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 12px 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.style-btn:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.style-btn.active {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(7, 193, 96, 0.1);
+}
+
+.style-preview {
+    font-size: 14px;
+    color: var(--primary);
+}
+
+.style-preview.none {
+    font-size: 11px;
+    color: var(--text-light);
+}
+
+/* 开关列表 */
+.toggle-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.toggle-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+.toggle-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+/* 框样式网格 */
+.box-styles-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.box-style-btn {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 12px 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.box-style-btn:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.box-icon {
+    font-size: 20px;
+}
+
+.box-name {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* 重置按钮 */
+.btn-reset {
+    width: 100%;
+    padding: 12px;
+    background: var(--border-light);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-reset:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    color: #dc2626;
+}
+
+/* 遮罩层 */
+.settings-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.settings-panel.active + .settings-overlay,
+.settings-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ============================================
+   微信内容样式
+   ============================================ */
 .wechat-style {
-    font-family: -apple-system-font,BlinkMacSystemFont,"Helvetica Neue","PingFang SC","Hiragino Sans GB","Microsoft YaHei UI","Microsoft YaHei",Arial,sans-serif;
+    font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
     font-size: 15px;
     color: #333;
     line-height: 1.75;
     word-wrap: break-word;
 }
 
-.wechat-style h1 {
-    font-size: 18px;
-    font-weight: bold;
-    margin: 20px 0 10px;
-    text-align: center;
-}
-
-.wechat-style h2 {
-    font-size: 16px;
-    font-weight: bold;
-    margin: 15px 0 10px;
-    border-left: 4px solid var(--primary);
-    padding-left: 10px;
-}
-
-.wechat-style h3, .wechat-style h4 {
-    font-size: 15px;
-    font-weight: bold;
-    margin: 15px 0 5px;
-}
-
-.wechat-style p {
-    margin-bottom: 1.2em;
-}
-
-.wechat-style blockquote {
-    margin: 1.2em 0;
-    padding: 15px 20px;
-    background-color: #f8f9fa;
-    border-left: 8px solid #07c160;
-    color: #666;
-    font-style: italic;
-    border-radius: 4px;
-}
-
-/* 微信分割线 */
-.wechat-style hr {
-    border: none;
-    height: 1px;
-    background-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.1), rgba(0,0,0,0));
-    margin: 30px 0;
-}
-
-/* 自定义分割线样式 */
-.custom-separator {
-    text-align: center;
-    margin: 30px 0;
-    color: var(--primary);
-}
-
-.custom-separator::before {
-    content: "✦ ✦ ✦";
-    letter-spacing: 10px;
-    font-size: 12px;
-}
-
-/* Modal UI */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal.active {
-    display: flex;
-}
-
-.modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    width: 400px;
-    box-shadow: var(--shadow-soft);
-}
-
-.modal-content input {
-    width: 100%;
-    margin: 20px 0;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
-
+/* 底部 */
 .footer {
-    padding: 10px;
+    padding: 12px;
     text-align: center;
     font-size: 0.75rem;
-    color: var(--text-muted);
+    color: var(--text-light);
     background: white;
     border-top: 1px solid var(--border-color);
+}
+
+/* ============================================
+   响应式调整
+   ============================================ */
+@media (max-width: 1200px) {
+    .container {
+        flex-direction: column;
+    }
+    
+    .editor-pane, .preview-pane {
+        flex: none;
+        height: 50%;
+    }
+}
+
+@media (max-width: 768px) {
+    .settings-panel {
+        width: 100%;
+        right: -100%;
+    }
+    
+    .toolbar {
+        flex-wrap: wrap;
+    }
+    
+    .toolbar-btn-text span:last-child {
+        display: none;
+    }
 }

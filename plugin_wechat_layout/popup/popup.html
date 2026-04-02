@@ -12,17 +12,80 @@
                 <span class="logo-icon">✨</span>
                 <h1>微信排版助手</h1>
             </div>
-            <div class="version">V1.0</div>
+            <div class="version">V2.0</div>
         </header>
 
         <main class="content">
+            <!-- 新的工具栏 -->
+            <div class="toolbar-mini">
+                <div class="toolbar-group-mini">
+                    <button id="btn-format" class="btn-magic">
+                        <span>✨</span> 魔法自动排版
+                    </button>
+                    <button id="btn-play" class="btn-icon" title="执行排版">▶</button>
+                    <button id="btn-settings-toggle" class="btn-icon" title="设置">☰</button>
+                </div>
+            </div>
+
+            <!-- 设置面板（可折叠） -->
+            <div id="settings-panel" class="settings-panel-mini" style="display: none;">
+                <div class="settings-section">
+                    <h4>📏 标题字号</h4>
+                    <div class="slider-row">
+                        <label>一级: <span id="h1-val">20</span>px</label>
+                        <input type="range" id="h1-size" min="16" max="28" value="20">
+                    </div>
+                    <div class="slider-row">
+                        <label>二级: <span id="h2-val">17</span>px</label>
+                        <input type="range" id="h2-size" min="14" max="22" value="17">
+                    </div>
+                    <div class="slider-row">
+                        <label>三级: <span id="h3-val">15</span>px</label>
+                        <input type="range" id="h3-size" min="13" max="19" value="15">
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h4>✦ 三横线样式</h4>
+                    <div class="hr-selector">
+                        <button class="hr-btn active" data-hr="stars">✦✦✦</button>
+                        <button class="hr-btn" data-hr="line">───</button>
+                        <button class="hr-btn" data-hr="dots">···</button>
+                        <button class="hr-btn" data-hr="wave">〜〜〜</button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h4>🎨 文字样式</h4>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="bold-green" checked> 加粗变绿色
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="quote-highlight" checked> 书名号《》高亮
+                    </label>
+                </div>
+
+                <div class="settings-section">
+                    <h4>⚡ 自动插入三横线</h4>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="auto-hr-h1" checked> 一级标题前
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="auto-hr-h2" checked> 二级标题前
+                    </label>
+                </div>
+
+                <button id="btn-save-settings" class="btn-save">保存设置</button>
+            </div>
+
             <div class="editor-pane">
                 <div class="pane-label">输入 Markdown</div>
-                <textarea id="input-md" placeholder="在此粘贴 AI 生成的 Markdown 内容..."></textarea>
+                <textarea id="input-md" placeholder="在此粘贴 AI 生成的 Markdown 内容...
+
+支持：#标题 **加粗** *斜体* `代码` ---分割线"></textarea>
             </div>
 
             <div class="actions">
-                <button id="btn-format" class="btn btn-primary">🚀 一键排版</button>
                 <button id="btn-copy" class="btn btn-success">📋 复制 HTML</button>
             </div>
 
@@ -35,9 +98,6 @@
         </main>
     </div>
 
-    <!-- 必须先加载 marked 核心库 -->
-    <script src="../lib/marked.min.js"></script>
-    <!-- 再加载自己的业务逻辑 -->
     <script src="popup.js"></script>
 </body>
 </html>

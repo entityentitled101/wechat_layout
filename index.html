@@ -11,20 +11,29 @@
 </head>
 <body>
     <div id="app">
+        <!-- 顶部导航栏 -->
         <header class="header">
             <div class="logo">
                 <span class="logo-icon">✨</span>
                 <h1>微信排版助手</h1>
             </div>
-            <div class="actions">
-                <button id="btn-ai" class="btn btn-secondary">
-                    <span class="icon">🤖</span> AI 智能校验
-                </button>
-                <button id="btn-format" class="btn btn-primary">
-                    <span class="icon">🚀</span> 一键排版
-                </button>
-                <button id="btn-copy" class="btn btn-success">
-                    <span class="icon">📋</span> 复制 HTML
+            
+            <!-- 新的工具栏：魔法自动排版 | 播放 | 菜单 -->
+            <div class="toolbar">
+                <div class="toolbar-group">
+                    <button id="btn-format" class="toolbar-btn toolbar-btn-text">
+                        <span class="toolbar-icon">✨</span>
+                        魔法自动排版
+                    </button>
+                    <button id="btn-play" class="toolbar-btn toolbar-btn-icon" title="执行排版">
+                        <span>▶</span>
+                    </button>
+                    <button id="btn-menu" class="toolbar-btn toolbar-btn-icon" title="设置">
+                        <span>☰</span>
+                    </button>
+                </div>
+                <button id="btn-copy" class="toolbar-btn toolbar-btn-secondary">
+                    <span>📋</span> 复制 HTML
                 </button>
             </div>
         </header>
@@ -35,7 +44,16 @@
                     <span>输入 Markdown</span>
                     <span class="badge">Markdown</span>
                 </div>
-                <textarea id="input-md" placeholder="请在此粘贴 AI 生成的 Markdown 内容..."></textarea>
+                <textarea id="input-md" placeholder="请在此粘贴 AI 生成的 Markdown 内容...
+
+支持的格式：
+# 一级标题  ## 二级标题  ### 三级标题
+> 引用文本
+- 无序列表  1. 有序列表
+**加粗**  *斜体*  ~~删除线~~  `行内代码`
+--- 三横线  |表格|  链接[text](url)
+
+选中文字后可以应用特殊框样式"></textarea>
             </div>
 
             <div class="preview-pane">
@@ -61,18 +79,134 @@
         </footer>
     </div>
 
-    <!-- 弹窗：AI 配置 -->
-    <div id="ai-modal" class="modal">
-        <div class="modal-content">
-            <h3>AI 智能校验配置</h3>
-            <p>输入您的智谱 AI API Key 以启用格式自动判定功能</p>
-            <input type="password" id="api-key" placeholder="Enter API Key...">
-            <div class="modal-actions">
-                <button id="modal-close" class="btn">取消</button>
-                <button id="modal-save" class="btn btn-primary">保存并启动</button>
-            </div>
+    <!-- 设置面板（侧边滑出） -->
+    <div id="settings-panel" class="settings-panel">
+        <div class="settings-header">
+            <h2>⚙️ 排版设置</h2>
+            <button id="btn-close-settings" class="btn-close">✕</button>
+        </div>
+        
+        <div class="settings-content">
+            <!-- 标题字号设置 -->
+            <section class="settings-section">
+                <h3>📏 标题字号</h3>
+                <div class="setting-item">
+                    <label>一级标题 <span id="h1-size-value" class="size-value">20px</span></label>
+                    <input type="range" id="h1-size" min="16" max="28" value="20" class="slider">
+                </div>
+                <div class="setting-item">
+                    <label>二级标题 <span id="h2-size-value" class="size-value">17px</span></label>
+                    <input type="range" id="h2-size" min="14" max="22" value="17" class="slider">
+                </div>
+                <div class="setting-item">
+                    <label>三级标题 <span id="h3-size-value" class="size-value">15px</span></label>
+                    <input type="range" id="h3-size" min="13" max="19" value="15" class="slider">
+                </div>
+            </section>
+
+            <!-- 三横线样式 -->
+            <section class="settings-section">
+                <h3>✦ 三横线样式</h3>
+                <div class="style-selector">
+                    <button class="style-btn" data-hr-style="stars" title="星星">
+                        <span class="style-preview stars">✦ ✦ ✦</span>
+                    </button>
+                    <button class="style-btn" data-hr-style="line" title="横线">
+                        <span class="style-preview line">───</span>
+                    </button>
+                    <button class="style-btn" data-hr-style="dots" title="圆点">
+                        <span class="style-preview dots">···</span>
+                    </button>
+                    <button class="style-btn" data-hr-style="wave" title="波浪">
+                        <span class="style-preview wave">〜 〜 〜</span>
+                    </button>
+                    <button class="style-btn" data-hr-style="none" title="无">
+                        <span class="style-preview none">无</span>
+                    </button>
+                </div>
+                
+                <h4 style="margin-top: 16px; font-size: 13px; color: #666;">自动插入三横线</h4>
+                <div class="toggle-list">
+                    <label class="toggle-item">
+                        <input type="checkbox" id="auto-hr-h1" checked>
+                        <span>一级标题前自动插入</span>
+                    </label>
+                    <label class="toggle-item">
+                        <input type="checkbox" id="auto-hr-h2" checked>
+                        <span>二级标题前自动插入</span>
+                    </label>
+                    <label class="toggle-item">
+                        <input type="checkbox" id="auto-hr-h3">
+                        <span>三级标题前自动插入</span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- 文字样式 -->
+            <section class="settings-section">
+                <h3>🎨 文字样式</h3>
+                <div class="toggle-list">
+                    <label class="toggle-item">
+                        <input type="checkbox" id="bold-color-toggle" checked>
+                        <span>加粗文字变绿色</span>
+                    </label>
+                    <label class="toggle-item">
+                        <input type="checkbox" id="quote-highlight-toggle" checked>
+                        <span>书名号《》高亮</span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- 特殊框样式 -->
+            <section class="settings-section">
+                <h3>📦 特殊框样式（选中文字后点击应用）</h3>
+                <div class="box-styles-grid">
+                    <button class="box-style-btn" data-box-style="quote" title="引言框">
+                        <span class="box-icon">💬</span>
+                        <span class="box-name">引言</span>
+                    </button>
+                    <button class="box-style-btn" data-box-style="tip" title="提示框">
+                        <span class="box-icon">💡</span>
+                        <span class="box-name">提示</span>
+                    </button>
+                    <button class="box-style-btn" data-box-style="info" title="信息框">
+                        <span class="box-icon">ℹ️</span>
+                        <span class="box-name">信息</span>
+                    </button>
+                    <button class="box-style-btn" data-box-style="warning" title="警告框">
+                        <span class="box-icon">⚠️</span>
+                        <span class="box-name">警告</span>
+                    </button>
+                    <button class="box-style-btn" data-box-style="keypoint" title="重点框">
+                        <span class="box-icon">🎯</span>
+                        <span class="box-name">重点</span>
+                    </button>
+                    <button class="box-style-btn" data-box-style="elegant" title="优雅框">
+                        <span class="box-icon">✨</span>
+                        <span class="box-name">优雅</span>
+                    </button>
+                    <button class="box-style-btn" data-box-style="minimal" title="简约框">
+                        <span class="box-icon">▪️</span>
+                        <span class="box-name">简约</span>
+                    </button>
+                    <button class="box-style-btn" data-box-style="card" title="卡片框">
+                        <span class="box-icon">📋</span>
+                        <span class="box-name">卡片</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 重置按钮 -->
+            <section class="settings-section">
+                <button id="btn-reset-settings" class="btn-reset">
+                    🔄 恢复默认设置
+                </button>
+            </section>
         </div>
     </div>
+
+    <!-- 遮罩层 -->
+    <div id="settings-overlay" class="settings-overlay"></div>
 
     <script type="module" src="main.js"></script>
 </body>
